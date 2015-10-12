@@ -49,7 +49,7 @@ def run(user, passwd, start, num):
 
 if __name__ == '__main__':
   if len(sys.argv) != 5:
-    print("Usage: linearize-hashes.py RPC_USER RPC_PASS START_BLOCK NUM_BLOCKS")
+    print("Usage: checkblock.py RPC_USER RPC_PASS START_BLOCK NUM_BLOCKS")
     sys.exit(1)
 
   user = sys.argv[1]
