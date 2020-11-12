@@ -14,10 +14,10 @@ class BlockHeader:
 		self.time = uint4(blockchain)
 		self.bits = uint4(blockchain)
 		self.nonce = uint4(blockchain)
-		self.auxpow = None 
+		self.auxpow = None
 		if parseAux and (self.version & 0x620100 == 0x620100):
 			self.auxpow = AuxPow(blockchain)
-			
+
 			#self.parentHeader = BlockHeader(blockchain)
 	def toString(self):
 		print "Version:\t 0x%02x" % self.version
@@ -33,7 +33,7 @@ class AuxPow:
 	def __init__(self, blockchain):
 		self.auxCbMerkle = []
 		self.auxBlockMerkle = []
-		
+
 		self.auxCoinBase = Tx(blockchain)
 		self.auxPow = hash32(blockchain)
 
@@ -69,13 +69,14 @@ class Block:
 	def toString(self):
 		print "#"*10 + " Block Header " + "#"*10
 		self.blockHeader.toString()
-		print 
+		print
 		print "##### Tx Count: %d" % self.txCount
 		for t in self.Txs:
 			t.toString()
 
 class Tx:
 	def __init__(self, blockchain):
+		start = blockchain.tell()
 		self.version = uint4(blockchain)
 		self.inCount = varint(blockchain)
 		self.inputs = []
@@ -87,9 +88,11 @@ class Tx:
 		if self.outCount > 0:
 			for i in range(0, self.outCount):
 				output = txOutput(blockchain)
-				self.outputs.append(output)	
+				self.outputs.append(output)
 		self.lockTime = uint4(blockchain)
-		
+		end = blockchain.tell()
+		self.size = end - start
+
 	def toString(self):
 		print ""
 		print "="*10 + " New Transaction " + "="*10
@@ -102,7 +105,7 @@ class Tx:
 		for o in self.outputs:
 			o.toString()
 		print "Lock Time:\t %d" % self.lockTime
-				
+
 
 class txInput:
 	def __init__(self, blockchain):
@@ -118,9 +121,9 @@ class txInput:
 		print "Script Length:\t %d" % self.scriptLen
 		print "Script Sig:\t %s" % hashStr(self.scriptSig)
 		print "Sequence:\t %8x" % self.seqNo
-		
+
 class txOutput:
-	def __init__(self, blockchain):	
+	def __init__(self, blockchain):
 		self.value = uint8(blockchain)
 		self.scriptLen = varint(blockchain)
 		self.pubkey = blockchain.read(self.scriptLen)
@@ -153,7 +156,3 @@ class ScriptSig:
 				self.reason = "non-DER"
 		else:
 			self.reason = "multisig"
-
-
-
-

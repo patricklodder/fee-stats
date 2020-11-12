@@ -9,7 +9,7 @@ from __future__ import print_function
 import struct
 import sys
 
-from checksigs import *
+from checkfees import *
 from blocktools import hashStr
 from rpc import BitcoinRPC
 
@@ -38,7 +38,7 @@ def run(user, passwd, start, num):
       h = resp_obj['result']
 
   counter = SigCounter()
-  check = lambda b: parseAndCount(counter, b)
+  check = lambda b: parseAndCount(rpc, counter, b)
 
   for i in range(0, num):
     h = fetch_block(rpc, h, check)
@@ -58,6 +58,3 @@ if __name__ == '__main__':
   num = int(sys.argv[4])
 
   run(user, passwd, start, num)
-
-
-
