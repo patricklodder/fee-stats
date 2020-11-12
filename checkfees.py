@@ -12,6 +12,7 @@ def parseAndCount(rpc, counter, hexblock):
 		amountOut = 0
 		numIn = 0
 		numOut = 0
+		numDust = 0
 
 		for vin in tx.inputs:
 			if (int(hashStr(vin.prevhash), 16) == 0):
@@ -31,11 +32,13 @@ def parseAndCount(rpc, counter, hexblock):
 		for vout in tx.outputs:
 			numOut += 1
 			amountOut += vout.value
+			if (vout.value < 100000000):
+				numDust += 1
 
 		if (amountIn == 0):
-			continue;
+			continue
 
-		print "%d,%s,%d,%d,%d,%d,%d,%d" % (height, block.blockHeader.version, tx.size, numIn, numOut, amountIn, amountOut, amountIn - amountOut)
+		print "%d,%s,%d,%d,%d,%d,%d,%d,%d" % (height, block.blockHeader.version, tx.size, numDust, numIn, numOut, amountIn, amountOut, amountIn - amountOut)
 
 
 	return block
